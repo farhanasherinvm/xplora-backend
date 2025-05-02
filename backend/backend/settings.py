@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-9@_7+k8(%a0zynvb*pnh(&x=8lew8)825nhf3hd_9_8im5eq$3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS =[]
 
 
 # Application definition
@@ -98,18 +98,40 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'xplora',
+#         'USER': 'postgres',
+#         'PASSWORD':'123',
+#         # 'HOST': 'localhost',
+#         'HOST': 'host.docker.internal',# <-- Connect to host machine
+#         'PORT': '5432'
+#     }}
+import os
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'xplora',
-        'USER': 'postgres',
-        'PASSWORD':'123',
-        'HOST': 'localhost',
-        'PORT': '5432'
-    }}
+        'NAME': os.environ.get("DB_NAME", "xplora"),
+        'USER': os.environ.get("DB_USER", "postgres"),
+        'PASSWORD': os.environ.get("DB_PASSWORD", "123"),
+        'HOST': os.environ.get("DB_HOST", "db"),
+        'PORT': os.environ.get("DB_PORT", "5432"),
+    }
+}
 
 
+ASGI_APPLICATION = 'xplora.asgi.application'
 
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
